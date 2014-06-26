@@ -8,9 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Nark::VERSION
   spec.authors       = ["Mark Ryall"]
   spec.email         = ["mark@ryall.name"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{abstraction layer for publishing analytics events.}
+  spec.homepage      = "https://github.com/everydayhero/nark"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
