@@ -3,11 +3,7 @@ require 'nark'
 class TestSignup
   include Nark
 
-  def self.collection_name
-    :test_signups
-  end
-
-  attr_reader :serializable_hash
+  collection_name :test_signups
 
   def initialize(attributes)
     @serializable_hash = attributes
@@ -24,8 +20,15 @@ describe TestSignup do
   it 'should emit event to keen with specific timestamp' do
     time = Time.now
     expect(Keen).to \
-      receive(:publish).with :test_signups, user_name: 'everydayhero',
-      keen: { timestamp: time }
+      receive(:publish).with :test_signups,
+                             user_name: 'everydayhero',
+                             keen: { timestamp: time }
     TestSignup.new(user_name: 'everydayhero').emit timestamp: time
+  end
+
+  it 'should emit returning self' do
+    allow(Keen).to receive :publish
+    signup = TestSignup.new({})
+    expect(signup.emit).to eq(signup)
   end
 end
