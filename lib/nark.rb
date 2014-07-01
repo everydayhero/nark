@@ -6,12 +6,15 @@ module Nark
     klass.extend ClassMethods
   end
 
-  attr_reader :serializable_hash
+  def serializable_hash(value = nil)
+    @serializable_hash = value if value
+    @serializable_hash
+  end
 
   def emit(timestamp: nil)
-    hash = serializable_hash
+    hash = serializable_hash.clone
     hash.merge! keen: { timestamp: timestamp } if timestamp
-    Keen.publish self.class.collection_name, serializable_hash
+    Keen.publish self.class.collection_name, hash
     self
   end
 

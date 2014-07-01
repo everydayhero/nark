@@ -6,7 +6,7 @@ class TestSignup
   collection_name :test_signups
 
   def initialize(attributes)
-    @serializable_hash = attributes
+    serializable_hash attributes
   end
 end
 
@@ -24,6 +24,13 @@ describe TestSignup do
                              user_name: 'everydayhero',
                              keen: { timestamp: time }
     TestSignup.new(user_name: 'everydayhero').emit timestamp: time
+  end
+
+  it 'should not mutate serializable_hash' do
+    allow(Keen).to receive :publish
+    signup = TestSignup.new({})
+    signup.emit timestamp: Time.now
+    expect(signup.serializable_hash).to eq({})
   end
 
   it 'should emit returning self' do
