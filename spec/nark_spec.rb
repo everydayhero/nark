@@ -34,6 +34,14 @@ describe TestSignup do
     TestSignup.new(user_name: 'everydayhero').emit timestamp: time
   end
 
+  it 'should emit event with specific collection_name' do
+    time = Time.now
+    expect(emitter).to \
+      receive(:emit).with 'signup2', {user_name: 'everydayhero'}, nil
+
+    TestSignup.new(user_name: 'everydayhero').emit collection_name: 'signup2'
+  end
+
   it 'should not mutate serializable_hash' do
     allow(emitter).to receive :emit
     signup = TestSignup.new({})

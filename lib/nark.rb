@@ -11,9 +11,10 @@ module Nark
     @serializable_hash
   end
 
-  def emit(timestamp: nil)
+  def emit(collection_name: nil, timestamp: nil)
+    collection = collection_name || self.class.collection_name
     hash = serializable_hash.clone
-    Nark.emitter.emit(self.class.collection_name, hash, timestamp)
+    Nark.emitter.emit(collection, hash, timestamp)
 
     self
   end
