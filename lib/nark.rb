@@ -1,5 +1,5 @@
 require 'nark/version'
-require 'keen'
+require 'nark/influxdb_emitter'
 
 module Nark
   def self.included(klass)
@@ -13,8 +13,8 @@ module Nark
 
   def emit(timestamp: nil)
     hash = serializable_hash.clone
-    hash.merge! keen: { timestamp: timestamp } if timestamp
-    Keen.publish self.class.collection_name, hash
+    Nark.emitter.emit(self.class.collection_name, hash, timestamp)
+
     self
   end
 
@@ -22,6 +22,25 @@ module Nark
     def collection_name(value = nil)
       @collection_name = value if value
       @collection_name
+    end
+  end
+
+  class << self
+    attr_writer :emitter
+
+    def configure(&block)
+      block.call self
+    end
+
+    def emitter
+      @emitter ||= InfluxDBEmitter.new(
+        ENV['INFLUXDB_DATABASE'],
+        username: ENV['INFLUXDB_USERNAME'],
+        password: ENV['INFLUXDB_PASSWORD'],
+        hosts: ENV['INFLUXDB_HOST'],
+        port: ENV['INFLUXDB_PORT'],
+        use_ssl: ENV['INFLUXDB_USE_SSL']
+      )
     end
   end
 end

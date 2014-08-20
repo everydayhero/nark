@@ -11,31 +11,40 @@ class TestSignup
 end
 
 describe TestSignup do
-  it 'should emit event to keen' do
-    expect(Keen).to \
-      receive(:publish).with :test_signups, user_name: 'everydayhero'
+  let(:emitter) { Object }
+
+  before do
+    Nark.configure do |nark|
+      nark.emitter = emitter
+    end
+  end
+
+  it 'should emit event to emitter' do
+    expect(emitter).to \
+      receive(:emit).with :test_signups, {user_name: 'everydayhero'}, nil
+
     TestSignup.new(user_name: 'everydayhero').emit
   end
 
-  it 'should emit event to keen with specific timestamp' do
+  it 'should emit event with specific timestamp' do
     time = Time.now
-    expect(Keen).to \
-      receive(:publish).with :test_signups,
-                             user_name: 'everydayhero',
-                             keen: { timestamp: time }
+    expect(emitter).to \
+      receive(:emit).with :test_signups, {user_name: 'everydayhero'}, time
+
     TestSignup.new(user_name: 'everydayhero').emit timestamp: time
   end
 
   it 'should not mutate serializable_hash' do
-    allow(Keen).to receive :publish
+    allow(emitter).to receive :emit
     signup = TestSignup.new({})
     signup.emit timestamp: Time.now
     expect(signup.serializable_hash).to eq({})
   end
 
   it 'should emit returning self' do
-    allow(Keen).to receive :publish
+    allow(emitter).to receive :emit
     signup = TestSignup.new({})
+
     expect(signup.emit).to eq(signup)
   end
 end
