@@ -12,6 +12,12 @@ module Nark
       influxdb_client.write_point(collection_name, data)
     end
 
+    def emit_bulk(data_hash)
+      data_hash.each do |collection_name, data|
+        influxdb_client.write_point(collection_name, data)
+      end
+    end
+
     private
 
     attr_reader :influxdb_client

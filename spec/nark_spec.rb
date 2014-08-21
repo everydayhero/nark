@@ -5,7 +5,7 @@ class TestSignup
 
   collection_name :test_signups
 
-  def initialize(attributes)
+  def initialize(attributes = {})
     serializable_hash attributes
   end
 end
@@ -21,7 +21,7 @@ describe TestSignup do
 
   it 'should emit event to emitter' do
     expect(emitter).to \
-      receive(:emit).with :test_signups, {user_name: 'everydayhero'}, nil
+      receive(:emit).with :test_signups, { user_name: 'everydayhero' }, nil
 
     TestSignup.new(user_name: 'everydayhero').emit
   end
@@ -29,17 +29,18 @@ describe TestSignup do
   it 'should emit event with specific timestamp' do
     time = Time.now
     expect(emitter).to \
-      receive(:emit).with :test_signups, {user_name: 'everydayhero'}, time
+      receive(:emit).with :test_signups, { user_name: 'everydayhero' }, time
 
     TestSignup.new(user_name: 'everydayhero').emit timestamp: time
   end
 
   it 'should emit event with specific collection_name' do
-    time = Time.now
     expect(emitter).to \
-      receive(:emit).with 'signup2', {user_name: 'everydayhero'}, nil
+      receive(:emit).with 'signup2', { user_name: 'everydayhero' }, nil
 
-    TestSignup.new(user_name: 'everydayhero').emit collection_name: 'signup2'
+    TestSignup.new(user_name: 'everydayhero').tap do |signup|
+      signup.collection_name 'signup2'
+    end.emit
   end
 
   it 'should not mutate serializable_hash' do
@@ -54,5 +55,21 @@ describe TestSignup do
     signup = TestSignup.new({})
 
     expect(signup.emit).to eq(signup)
+  end
+
+  it 'should emit mutiple events based on the configured collection_name' do
+    bulk_events_data = {
+      test_signups: [{}],
+      signup_1: [{}, {}]
+    }
+    expect(emitter).to receive(:emit_bulk).with bulk_events_data
+
+    events = [
+      TestSignup.new,
+      TestSignup.new.tap { |event| event.collection_name :signup_1 },
+      TestSignup.new.tap { |event| event.collection_name :signup_1 }
+    ]
+
+    TestSignup.emit(events)
   end
 end
