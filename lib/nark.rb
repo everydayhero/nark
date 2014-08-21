@@ -34,8 +34,8 @@ module Nark
     def emit(narks = {})
       return if narks.empty?
 
-      nark_hash = narks.
-        each_with_object(Hash.new { |h,k| h[k] = [] }) do |nark, hash|
+      nark_hash =
+        narks.each_with_object(Hash.new { |h, k| h[k] = [] }) do |nark, hash|
           hash[nark.collection_name] << nark.serializable_hash
         end
 
