@@ -5,7 +5,7 @@ class TestSignup
 
   collection_name :test_signups
 
-  def initialize(attributes)
+  def initialize(attributes = {})
     serializable_hash attributes
   end
 end
@@ -56,5 +56,21 @@ describe TestSignup do
     signup = TestSignup.new({})
 
     expect(signup.emit).to eq(signup)
+  end
+
+  it 'should emit mutiple events based on the configured collection_name' do
+    bulk_events_data = {
+      test_signups: [{}],
+      signup_1: [{}, {}]
+    }
+    expect(emitter).to receive(:emit_bulk).with bulk_events_data
+
+    events = [
+      TestSignup.new,
+      TestSignup.new.tap {|event| event.collection_name :signup_1},
+      TestSignup.new.tap {|event| event.collection_name :signup_1}
+    ]
+
+    TestSignup.emit(events)
   end
 end
