@@ -22,5 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop'
 
-  spec.add_dependency 'keen', '~> 0.8'
+  spec.add_dependency 'influxdb', '~> 0.1.8'
 end
