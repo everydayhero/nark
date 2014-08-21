@@ -39,7 +39,9 @@ describe TestSignup do
     expect(emitter).to \
       receive(:emit).with 'signup2', {user_name: 'everydayhero'}, nil
 
-    TestSignup.new(user_name: 'everydayhero').emit collection_name: 'signup2'
+    TestSignup.new(user_name: 'everydayhero').tap do |signup|
+      signup.collection_name 'signup2'
+    end.emit
   end
 
   it 'should not mutate serializable_hash' do
