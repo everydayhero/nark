@@ -23,4 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
 
   spec.add_dependency 'influxdb', '~> 0.1.8'
+  spec.add_dependency 'faraday', '~> 0.9.0'
+  spec.add_dependency 'faraday_middleware', '~> 0.9.1'
 end

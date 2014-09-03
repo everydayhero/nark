@@ -1,7 +1,8 @@
 require 'influxdb'
+require 'nark/emitter'
 
 module Nark
-  class InfluxDBEmitter
+  class InfluxDBEmitter < Nark::Emitter
     def initialize(*args)
       @influxdb_client = InfluxDB::Client.new(*args)
     end
