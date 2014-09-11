@@ -1,23 +1,31 @@
-# Nark
+Nark
+====
 
 Ruby API for sending generic events for analytics purpose. Currently it assumes the **InfluxDB** is the receiving end.
 
-
-## Installation
+Installation
+------------
 
 Add this line to your application's Gemfile:
 
-    gem 'nark'
+```
+gem 'nark'
+```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install nark
+```
+$ gem install nark
+```
 
-## Usage
+Usage
+-----
 
 ### Configuration
 
@@ -27,6 +35,7 @@ As Nark currently only supports InfluxDB, the simplest way to set it up is by pr
 ENV['INFLUXDB_DATABASE'] # required, eg. supporter-events
 ENV['INFLUXDB_USERNAME'] # required
 ENV['INFLUXDB_PASSWORD'] # required
+ENV['EVENT_GATEWAY_URL'] # optional but recommended for reporting
 ENV['INFLUXDB_HOST']     # optional, default to localhost
 ENV['INFLUXDB_PORT']     # optional, default to 8086
 ENV['INFLUXDB_USE_SSL']  # optional, default to false
@@ -56,8 +65,7 @@ class TestSignup
 end
 ```
 
-With the above setting, it makes all of the `TestSignup` events to be send to the `test_signups` collection, as the `collection_name` is set in the class level.
-The following shows how to emit the event object:
+With the above setting, it makes all of the `TestSignup` events to be send to the `test_signups` collection, as the `collection_name` is set in the class level. The following shows how to emit the event object:
 
 ```ruby
 TestSignup.new.emit
@@ -75,7 +83,6 @@ Or if the serialised event data contains the `time` field (need to be in numeric
 TestSignup.new(time: Time.now.i).emit
 ```
 
-
 Sometimes it is desirable to make the same type of objects to be send to different collections:
 
 ```ruby
@@ -91,7 +98,6 @@ end
 
 The above example will send the events to new collections each day.
 
-
 ### Bulk Emit
 
 Nark also allows events to be send in bulk:
@@ -104,7 +110,8 @@ TestSignup.emit events
 
 Please note, when sending events in bulk, it is good idea to have the `time` field explicitly included in the serialised hash, otherwise the events will have the same timestamp set.
 
-## Contributing
+Contributing
+------------
 
 1. Fork it ( https://github.com/[my-github-username]/nark/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
