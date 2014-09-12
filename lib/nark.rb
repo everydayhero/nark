@@ -1,5 +1,7 @@
 require 'nark/version'
 require 'nark/influxdb_emitter'
+require 'nark/event_gateway_emitter'
+require 'nark/emitter'
 
 module Nark
   def self.included(klass)
@@ -31,7 +33,7 @@ module Nark
       @collection_name
     end
 
-    def emit(narks = {})
+    def emit(narks = [])
       return if narks.empty?
 
       nark_hash =
