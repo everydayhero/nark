@@ -1,5 +1,6 @@
 require 'nark/version'
 require 'nark/influxdb_emitter'
+require 'nark/null_emitter'
 require 'nark/event_gateway_emitter'
 require 'nark/emitter'
 
@@ -53,8 +54,26 @@ module Nark
     end
 
     def emitter
-      @emitter ||= InfluxDBEmitter.new(
-        ENV['INFLUXDB_DATABASE'],
+      @emitter ||= if use_influxdb_emitter?
+        influxdb_emitter
+      else
+        NullEmitter.new
+      end
+    end
+
+    private
+
+    def use_influxdb_emitter?
+      !!influxdb_database
+    end
+
+    def influxdb_database
+      ENV['INFLUXDB_DATABASE']
+    end
+
+    def influxdb_emitter
+      InfluxDBEmitter.new(
+        influxdb_database,
         username: ENV['INFLUXDB_USERNAME'],
         password: ENV['INFLUXDB_PASSWORD'],
         hosts: ENV['INFLUXDB_HOST'],
