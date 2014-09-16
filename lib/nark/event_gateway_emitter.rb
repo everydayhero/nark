@@ -36,7 +36,7 @@ module Nark
     end
 
     def post data
-      response = @faraday.post do |request|
+      response = faraday.post do |request|
         request.body = data.to_json
       end
       response.status == 201
